@@ -1,0 +1,100 @@
+.form {
+    padding: 56px;
+    max-width: 540px;
+    width: 100%;
+    box-shadow: 5px 10px 50px 0px rgba(16, 112, 177, 0.20);
+    cursor: default;
+}
+
+@media (width <= 500px) {
+    .form {
+        padding: 30px;
+    }
+}
+
+.form__header {
+    padding-bottom: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.form__title {
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 30px; /* 150% */
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.form__header button {
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 600;
+    color: var(--colorBiscay);
+    background: initial;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s linear;
+}
+
+.form__header button:hover {
+    color: var(--colorDanube);
+}
+
+.form__label label {
+    padding-bottom: 8px;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 30px; /* 187.5% */
+    letter-spacing: 0.64px;
+    opacity: 0.8;
+}
+
+.form__content--text, .form__content--comment {
+    width: 100%;
+    padding: 20px 40px;
+    margin-bottom: 30px;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 30px; /* 187.5% */
+    letter-spacing: 0.64px;
+    border-radius: 10px;
+    border: 1px solid var(--colorAstral);
+    cursor: pointer;
+    opacity: 0.4;
+    transition: opacity 0.3s linear;
+}
+
+.form__content--comment {
+    resize: none;
+    height: 140px;
+}
+
+.form__content--text:hover, .form__content--text:focus, .form__content--comment:hover, .form__content--comment:focus {
+    outline: none;
+    border: 1px solid var(--colorBiscay);
+    opacity: 1;
+}
+
+.form__label .isNotValid {
+    color: var(--colorScarlet);
+    border: 1px solid var(--colorScarlet);
+    opacity: 1;
+}
+
+.form__btn {
+    color: var(--colorWhite);
+    padding: 20px;
+    margin-top: 4vh;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 26px; /* 162.5% */
+    letter-spacing: 0.64px;
+    text-transform: uppercase;
+}

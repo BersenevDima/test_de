@@ -1,0 +1,162 @@
+@import url("palette.pcss");
+@import url("fonts.pcss");
+@import url("hero.pcss");
+@import url("offers.pcss");
+@import url("client.pcss");
+@import url("team.pcss");
+@import url("footer.pcss");
+@import url("form.pcss");
+@import url("modal.pcss");
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    line-height: 1.5;
+    font-family: Gilroy, sans-serif;
+    margin: 0;
+    color: var(--colorBiscay);
+}
+
+ul,
+ol {
+    padding: 0;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul[class],
+ol[class],
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+    margin: 0;
+}
+
+ul[class],
+ol[class] {
+    list-style: none;
+}
+
+a, a[class] {
+    text-decoration: none;
+}
+
+a:not([class]) {
+    text-decoration-skip-ink: auto;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+article > * + * {
+    margin-top: 1em;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+.container {
+    width: 100%;
+    max-width: 1260px;
+    margin: 0 auto;
+    padding: var(--paddingTopBottom) var(--paddingLeftRight);
+}
+
+.container__title {
+    font-size: calc(30px + 6 * (100vw / 1920));
+    line-height: calc(40px + 12 * (100vw / 1920));
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 1.8px;
+}
+
+.container__descr {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.header__title {
+    font-family: 'Proxima Nova Bl', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: calc(30px + 6 * (100vw / 1920));
+    line-height: calc(40px + 12 * (100vw / 1920));
+}
+
+.btn, .link {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    background-color: var(--colorDanube);
+    border-radius: 10px;
+    transition: opacity 0.3s linear;
+}
+
+.btn {
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.3s linear;
+    width: 100%;
+    padding: 15px;
+}
+
+@media (width <= 767px) {
+    .container__title {
+        font-size: calc(30px + (6 + 6 * 0.7) * ((100vw - 320px) / 1440));
+        line-height: calc(40px + (12 + 12 * 0.7) * ((100vw - 320px) / 1440));
+    }
+
+    .container__descr {
+        font-size: 14px;
+    }
+
+    .btn, .link {
+        font-size: 14px;
+    }
+}
+
+.btn:hover, .link:hover {
+    opacity: 0.8;
+}
+
+.wrapper__color--danube {
+    background: var(--colorDanube);
+    color: var(--colorWhite);
+    border-radius: 200px 0px 0px;
+}
+
+.wrapper__color--azure {
+    background: var(--colorAzure);
+    margin-right: 7.5vw;
+    border-radius: 0px 200px 0px 0px;
+}
+
+.container__line {
+    stroke-width: 1px;
+    stroke: var(--colorWhite);
+    width: 80vw;
+    opacity: 0.4;
+    margin-left: 0;
+}
+
+.sprites {
+    fill: black;
+}
