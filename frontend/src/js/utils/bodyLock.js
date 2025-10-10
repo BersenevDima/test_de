@@ -1,14 +1,15 @@
-/**
- *
- */
-export const BodyLock = (unlock, timeout) => {
-  const lockPaddingValue = window.innerWidth - document.querySelector(".wrapper").offsetWidth + "px";
+export const BodyLock = (() => {
+  let isLocked = false;
 
-  document.body.style.paddingRight = lockPaddingValue;
-  document.body.style.overflow = "hidden";
+  return (timeout = 300) => {
+    if (isLocked) return;
+    const lockPadding = window.innerWidth - document.querySelector(".wrapper").offsetWidth + "px";
+    document.body.style.paddingRight = lockPadding;
+    document.body.style.overflow = "hidden";
+    isLocked = true;
 
-  unlock = false;
-  setTimeout(() => {
-    unlock = true;
-  }, timeout);
-};
+    setTimeout(() => {
+      isLocked = false;
+    }, timeout);
+  };
+})();

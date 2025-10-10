@@ -9,15 +9,22 @@
     cursor: pointer;
     overflow-y: auto;
     overflow-x: hidden;
-    transition: all 0.3s linear;
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.open {
+.modal.open {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     opacity: 1;
     visibility: visible;
 }
 
-.close {
+.modal.close {
+    display: none;
     opacity: 0;
     visibility: hidden;
 }
@@ -36,14 +43,18 @@
     width: 100%;
     border-radius: 10px;
     background: var(--colorWhite);
+    transition: transform 0.3s ease;
+    transform: translateY(-30px);
+}
+
+.modal.open .modal__content {
+    transform: translateY(0);
 }
 
 .message__descr {
     padding: 30px;
     text-align: center;
     font-size: 20px;
-    font-style: normal;
-    font-weight: 400;
 }
 
 .message__btn {
@@ -51,11 +62,12 @@
     right: 10px;
     top: 10px;
     font-size: 25px;
-    font-style: normal;
-    font-weight: 600;
-    color: var(--colorBiscay);
-    background: initial;
+    background: none;
     border: none;
     cursor: pointer;
     transition: color 0.3s linear;
+}
+
+.message__btn:hover {
+    color: var(--colorDanube);
 }

@@ -15,7 +15,6 @@ module.exports = {
     "length-zero-no-unit": null,
     "color-function-notation": null,
     "alpha-value-notation": "number",
-    "security/detect-unsafe-regex": null,
   },
   ignoreFiles: [
     "build/*.css",

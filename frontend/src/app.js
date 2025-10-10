@@ -1,8 +1,13 @@
 import "./styles/global.pcss";
-import FormManager from "./js/form";
+import FormManager from "./js/form.js";
 import Modal from "./js/modal.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const form = new FormManager();
-  const modal = new Modal("[data-js-modal=modal1]");
+  new Modal({
+    modalEl: document.querySelector('[data-js-modal="modal1"]'),
+    openBtns: document.querySelectorAll('[data-js-open="modal1"]'),
+    closeBtns: document.querySelectorAll('[data-js-modal="modal1"] [data-js-close]')
+  });
+
+  new FormManager();
 });

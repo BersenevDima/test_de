@@ -1,133 +1,100 @@
-import Modal from "./modal";
+import Modal from "./modal.js";
 
-/**
- *
- */
 export class Form {
+  static selectors = { input: "[data-js-input]" };
 
-  static selectors = {
-    input: "[data-js-input]",
-  };
+  constructor(formEl, modalOpenCallback) {
+    this.form = formEl;
+    this.inputs = Array.from(this.form.querySelectorAll(Form.selectors.input));
+    this.url = this.form.getAttribute("action");
+    this.modalOpen = modalOpenCallback;
 
-  constructor (element) {
-    this.instance = element;
-
-    this.inputs = Array.from(
-      this.instance.querySelectorAll(Form.selectors.input)
-    );
-
-    this.url = this.instance.getAttribute("action");
-
-    if (this.instance) {
-      this.modal = new Modal("[data-js-modal=modal2]");
-      this.bindEvents();
-    }
+    this.form.addEventListener("submit", e => this.onSubmit(e));
   }
 
-  static setInputErrorState (input, isValid = true) {
+  static setInputErrorState(input, isValid = true) {
     input.classList.toggle("isValid", isValid);
     input.classList.remove("isNotValid");
-    if (!isValid) {
-      input.classList.add("isNotValid");
-    }
+    if (!isValid) input.classList.add("isNotValid");
   }
 
-  static isEmailValid (input) {
+  static isEmailValid(input) {
     const reg = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
     return reg.test(input.value);
   }
 
-  static isDefaultInputValid (input) {
-    return !!input.value.length;
+  static isDefaultInputValid(input) {
+    return !!input.value.trim().length;
   }
 
-  static isValid (inputs = []) {
-    const isInputValid = (input) => {
-      const validationType = input.getAttribute("data-js-input");
-      switch (validationType) {
-        case "email":
-          return Form.isEmailValid(input);
-        default:
-          return Form.isDefaultInputValid(input);
-      }
-    };
+  static isValid(inputs = []) {
     return inputs
-      .map((el) => {
-        const isValid = isInputValid(el);
-        Form.setInputErrorState(el, isValid);
+      .map(input => {
+        const type = input.getAttribute("data-js-input");
+        const isValid = type === "email" ? Form.isEmailValid(input) : Form.isDefaultInputValid(input);
+        Form.setInputErrorState(input, isValid);
         return isValid;
       })
-      .every((isValid) => !!isValid);
+      .every(Boolean);
   }
 
-  static async send (url, instance) {
-    return new Promise((resolve, reject) => {
-      fetch(url, {
-        mode: "no-cors",
-        method: "POST",
-        headers: {
-          "Access-Control-Allow-Headers": "Content-Type",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PATCH",
-        },
-        body: new FormData(instance),
-      })
-        .then((res) => {
-          if (res.ok) {
-            resolve(res);
-          } else {
-            reject(new Error(`Error: ${res.status} ${res.statusText}`));
-          }
-        })
-        .catch((err) => {
-          reject(err);
-        });
+  static async send(url, form) {
+    return fetch(url, {
+      mode: "no-cors",
+      method: "POST",
+      headers: {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PATCH",
+      },
+      body: new FormData(form),
     });
   }
 
-  #onSubmit (e) {
+  async onSubmit(e) {
     e.preventDefault();
-    const isValid = Form.isValid(this.inputs);
-    const btn = this.instance.querySelector('input[type="submit"]');
-    if (isValid) {
-      btn.disabled = true;
-      Form.send(this.url, this.instance)
-        .then(() => {
-          this.modal.modalOpen();
-          btn.disabled = false;
-        })
-        .catch(() => {
-          const currentModal = document.querySelector('[data-js-modal="modal2"]');
-          const changeText = currentModal.querySelector(".message__descr");
-          changeText.innerText = "An error has occurred";
-          this.modal.modalOpen();
-          btn.disabled = false;
-        });
+    if (!Form.isValid(this.inputs)) return;
+
+    const btn = this.form.querySelector('input[type="submit"]');
+    btn.disabled = true;
+
+    try {
+      await Form.send(this.url, this.form);
+      this.modalOpen();
+    } catch {
+      this.modalOpen();
+    } finally {
+      btn.disabled = false;
     }
   }
-
-  bindEvents () {
-    this.instance.addEventListener("submit", (e) => this.#onSubmit(e));
-  }
-
 }
 
-/**
- *
- */
 export default class FormManager {
-
   static selector = "[data-js-form]";
 
-  constructor () {
-    this.form = document.querySelectorAll(FormManager.selector);
-    if (this.form.length) {
-      this.init();
+  constructor() {
+    this.forms = document.querySelectorAll(FormManager.selector);
+
+    if (!this.forms.length) {
+      console.warn("No forms found on the page");
+      return;
     }
+
+    this.init();
   }
 
-  init () {
-    this.form.forEach((node) => new Form(node));
-  }
+  init() {
+    const modalEl = document.querySelector('[data-js-modal="modal2"]');
+    if (!modalEl) return;
 
+    const modal = new Modal({
+      modalEl,
+      closeBtns: modalEl.querySelectorAll('[data-js-close]')
+    });
+
+    this.forms.forEach(formEl => {
+      if (!formEl) return;
+      new Form(formEl, () => modal.open());
+    });
+  }
 }
