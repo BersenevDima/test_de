@@ -9,33 +9,31 @@ const TerserPlugin = require("terser-webpack-plugin");
 
 const path = require("path");
 
-/**
- *
- */
 module.exports = (env, argv) => {
   const mode = argv.mode;
 
   return {
     entry: path.join(__dirname, "src", "app.js"),
+
     output: {
-      path: path.join(__dirname, "build"),
+      path: path.resolve(__dirname, "build"),
       filename: "index.[contenthash].js",
       publicPath: "/test_de/",
-      assetModuleFilename: path.join("images", "[name][ext][query]"),
+      assetModuleFilename: "images/[name][ext][query]",
+      clean: true,
     },
+
     module: {
       rules: [
         {
           test: /\.(js|jsx|tsx|ts)$/,
-          use: [
-            {
-              loader: "babel-loader",
-              options: {
-                presets: [ "@babel/preset-env" ],
-              },
-            },
-          ],
           exclude: /node_modules/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: ["@babel/preset-env"],
+            },
+          },
         },
         {
           test: /\.pug$/,
@@ -44,7 +42,9 @@ module.exports = (env, argv) => {
         {
           test: /\.(pc|c)ss$/i,
           use: [
-            mode === "production" ? MiniCssExtractPlugin.loader : "style-loader",
+            mode === "production"
+              ? MiniCssExtractPlugin.loader
+              : "style-loader",
             {
               loader: "css-loader",
               options: {
@@ -72,56 +72,66 @@ module.exports = (env, argv) => {
         },
       ],
     },
+
     plugins: [
       new HtmlWebpackPlugin({
         template: path.join(__dirname, "src", "pages", "index.pug"),
         filename: "index.html",
       }),
+
       new FileManagerPlugin({
         events: {
           onStart: {
-            delete: [ "build" ],
+            delete: ["build"],
           },
         },
       }),
+
       new MiniCssExtractPlugin({
         filename: "styles/[name].[contenthash].css",
       }),
+
       new StylelintPlugin({
-        extensions: [ "css", "pcss" ],
+        extensions: ["css", "pcss"],
         context: path.resolve(__dirname, "src", "styles"),
         configFile: path.resolve(__dirname, ".stylelintrc.js"),
       }),
+
       new ESLintPlugin({
         context: path.resolve(__dirname, "src", "js"),
         overrideConfigFile: path.resolve(__dirname, ".eslintrc.js"),
       }),
+
       new CopyPlugin({
         patterns: [
           {
-            from: path.join(__dirname, "src", "fonts"),
+            from: path.resolve(__dirname, "src", "fonts"),
             to: "fonts",
           },
           {
-            from: path.join(__dirname, "src", "images"),
+            from: path.resolve(__dirname, "src", "images"),
             to: "images",
           },
         ],
       }),
     ],
+
     context: __dirname,
+
     devtool: "source-map",
+
     devServer: {
-      watchFiles: path.join(__dirname, "src"),
+      static: {
+        directory: path.join(__dirname, "src"),
+      },
       port: 9000,
       hot: true,
+      open: true,
     },
+
     optimization: {
-      minimize: true,
-      minimizer: [
-        new TerserPlugin(),
-        new CssMinimizerPlugin(),
-      ],
+      minimize: mode === "production",
+      minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
     },
   };
 };
